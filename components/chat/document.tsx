@@ -2,29 +2,31 @@
 
 import { memo } from "react"
 import { useToast } from "@/components/ui/use-toast"
+import type {
+  DocumentToolType,
+  DocumentToolCallProps,
+  DocumentToolResultProps,
+  DocumentToolArgs,
+  DocumentToolResult as DocumentToolResultType
+} from "@/types/document-types"
 
 import { Button } from "@/components/ui/button"
 import { CodeBlock } from "./code-block"
 
-interface DocumentToolCallProps {
-  type: "update" | "request-suggestions"
-  args: any
-  isReadonly: boolean
-}
-
-export function DocumentToolCall({
+export function DocumentToolCall<T extends DocumentToolType>({
   type,
   args,
   isReadonly
-}: DocumentToolCallProps) {
+}: DocumentToolCallProps<T>) {
   if (type === "update") {
+    const updateArgs = args as DocumentToolArgs["update"]
     return (
       <div className="flex flex-col gap-2">
         <div className="text-muted-foreground text-sm">
           Updating document...
         </div>
         <CodeBlock node={{}} inline={false} className="language-diff">
-          {args.diff}
+          {updateArgs.diff}
         </CodeBlock>
       </div>
     )
@@ -40,59 +42,80 @@ export function DocumentToolCall({
     )
   }
 
+  if (type === "create") {
+    const createArgs = args as DocumentToolArgs["create"]
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="text-muted-foreground text-sm">
+          Creating document: {createArgs.title}
+        </div>
+      </div>
+    )
+  }
+
   return null
 }
 
-interface DocumentToolResultProps {
-  type: "update" | "request-suggestions"
-  result: any
-  isReadonly: boolean
-}
-
-function PureDocumentToolResult({
+function PureDocumentToolResult<T extends DocumentToolType>({
   type,
   result,
   isReadonly
-}: DocumentToolResultProps) {
+}: DocumentToolResultProps<T>) {
   const { toast } = useToast()
 
   if (type === "update") {
+    const updateResult = result as DocumentToolResultType["update"]
     return (
       <div className="flex flex-col gap-2">
         <div className="text-muted-foreground text-sm">
           Document updated successfully!
         </div>
         <CodeBlock node={{}} inline={false} className="language-diff">
-          {result.diff}
+          {updateResult.diff}
         </CodeBlock>
       </div>
     )
   }
 
   if (type === "request-suggestions") {
+    const suggestionsResult =
+      result as DocumentToolResultType["request-suggestions"]
     return (
       <div className="flex flex-col gap-2">
         <div className="text-muted-foreground text-sm">
           Here are some suggestions:
         </div>
         <div className="flex flex-row flex-wrap gap-2">
-          {result.suggestions.map((suggestion: string, index: number) => (
-            <Button
-              key={index}
-              variant="outline"
-              className="text-sm"
-              disabled={isReadonly}
-              onClick={() => {
-                navigator.clipboard.writeText(suggestion)
-                toast({
-                  title: "Success",
-                  description: "Copied to clipboard!"
-                })
-              }}
-            >
-              {suggestion}
-            </Button>
-          ))}
+          {suggestionsResult.suggestions.map(
+            (suggestion: string, index: number) => (
+              <Button
+                key={index}
+                variant="outline"
+                className="text-sm"
+                disabled={isReadonly}
+                onClick={() => {
+                  navigator.clipboard.writeText(suggestion)
+                  toast({
+                    title: "Success",
+                    description: "Copied to clipboard!"
+                  })
+                }}
+              >
+                {suggestion}
+              </Button>
+            )
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  if (type === "create") {
+    const createResult = result as DocumentToolResultType["create"]
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="text-muted-foreground text-sm">
+          Document created: {createResult.title}
         </div>
       </div>
     )
@@ -101,4 +124,4 @@ function PureDocumentToolResult({
   return null
 }
 
-export const DocumentToolResult = memo(PureDocumentToolResult)
+export const DocumentToolResultComponent = memo(PureDocumentToolResult)

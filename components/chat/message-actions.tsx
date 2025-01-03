@@ -3,7 +3,7 @@
 import { memo } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { useSWRConfig } from "swr"
-import { useCopyToClipboard } from "usehooks-ts"
+import { useClipboard } from "@/lib/hooks/use-clipboard"
 import equal from "fast-deep-equal"
 
 import { Vote } from "@/db/schema"
@@ -32,7 +32,9 @@ function PureMessageActions({
   isLoading
 }: MessageActionsProps) {
   const { mutate } = useSWRConfig()
-  const [_, copyToClipboard] = useCopyToClipboard()
+  const { copyToClipboard } = useClipboard({
+    successMessage: "Message copied to clipboard!"
+  })
   const { toast } = useToast()
 
   if (isLoading) return null
@@ -49,10 +51,6 @@ function PureMessageActions({
               variant="outline"
               onClick={async () => {
                 await copyToClipboard(message.content as string)
-                toast({
-                  title: "Success",
-                  description: "Message copied to clipboard!"
-                })
               }}
             >
               <CopyIcon />

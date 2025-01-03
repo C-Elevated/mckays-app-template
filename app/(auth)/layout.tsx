@@ -6,12 +6,14 @@ This server layout provides a centered layout for (auth) pages.
 
 "use server"
 
+import { BaseLayout } from "@/components/layouts/base-layout"
+
 interface AuthLayoutProps {
   children: React.ReactNode
 }
 
 export default async function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="flex h-screen items-center justify-center">{children}</div>
+    <BaseLayout className="items-center justify-center">{children}</BaseLayout>
   )
 }

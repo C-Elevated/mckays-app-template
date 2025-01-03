@@ -8,9 +8,11 @@ This server page retrieves user todos from the database and renders them in a li
 
 import { getTodosAction } from "@/actions/db/todos-actions"
 import { TodoList } from "./_components/todo-list"
+import { auth } from "@supabase/ssr"
 
 export default async function TodoPage() {
-  const userId = "test-user" // Placeholder user ID
+  const { user } = await auth()
+  const userId = user?.id
   const { data: todos } = await getTodosAction(userId)
 
   return (

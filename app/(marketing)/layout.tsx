@@ -7,16 +7,12 @@ This server layout provides a shared header and basic structure for (marketing) 
 "use server"
 
 import { Header } from "@/components/header"
+import { BaseLayout } from "@/components/layouts/base-layout"
 
 export default async function MarketingLayout({
   children
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">{children}</main>
-    </div>
-  )
+  return <BaseLayout header={<Header />}>{children}</BaseLayout>
 }

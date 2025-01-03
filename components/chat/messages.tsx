@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer"
 import type { Vote } from "@/db/schema"
 import { cn } from "@/lib/utils"
 import { PreviewMessage, ThinkingMessage } from "./preview-message"
+import { useScroll } from "@/lib/hooks/use-scroll"
 
 interface MessagesProps {
   chatId: string
@@ -32,14 +33,7 @@ export function Messages({
   currentDocs
 }: MessagesProps) {
   const [expandedSources, setExpandedSources] = useState<number | null>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const { ref, entry } = useInView()
-
-  useEffect(() => {
-    if (scrollRef.current && entry?.isIntersecting) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
-    }
-  }, [messages, entry?.isIntersecting])
+  const { elementRef, inViewRef } = useScroll<HTMLDivElement>()
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -115,8 +109,8 @@ export function Messages({
 
         {isLoading && <ThinkingMessage />}
 
-        <div ref={scrollRef} />
-        <div ref={ref} />
+        <div ref={elementRef} />
+        <div ref={inViewRef} />
       </div>
     </div>
   )

@@ -10,6 +10,7 @@ import {
 } from "react"
 import { useToast } from "@/components/ui/use-toast"
 import { useCopyToClipboard } from "usehooks-ts"
+import { useClipboard } from "@/lib/hooks/use-clipboard"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -129,8 +130,9 @@ function PureBlockActions({
   mode,
   setConsoleOutputs
 }: BlockActionsProps) {
-  const [_, copyToClipboard] = useCopyToClipboard()
-  const { toast } = useToast()
+  const { copyToClipboard } = useClipboard({
+    successMessage: "Block copied to clipboard!"
+  })
 
   return (
     <div className="flex flex-row gap-1">
@@ -199,10 +201,6 @@ function PureBlockActions({
             className="hover:bg-muted h-fit p-2"
             onClick={() => {
               copyToClipboard(block.content)
-              toast({
-                title: "Success",
-                description: "Block copied to clipboard!"
-              })
             }}
             disabled={block.status === "streaming"}
           >

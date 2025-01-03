@@ -7,9 +7,11 @@ This server page displays pricing options for the product, integrating Stripe pa
 "use server"
 
 import { PricingCards } from "./_components/pricing-cards"
+import { auth } from "@supabase/ssr"
 
 export default async function PricingPage() {
-  const userId = "test-user" // Placeholder user ID
+  const { user } = await auth()
+  const userId = user?.id
 
   return (
     <div className="container py-6">

@@ -16,16 +16,11 @@ import type { Document } from "@/db/schema"
 import { useBlock } from "@/hooks/use-block"
 import { FileIcon, FullscreenIcon, LoaderIcon } from "./icons"
 import { InlineDocumentSkeleton } from "./document-skeleton"
-import { DocumentToolCall, DocumentToolResult } from "./document"
+import { DocumentToolCall, DocumentToolResultComponent } from "./document"
 import { Editor } from "./editor"
 import { CodeEditor } from "./code-editor"
 import type { UIBlock } from "@/types/block"
-
-interface DocumentPreviewProps {
-  isReadonly: boolean
-  result?: any
-  args?: any
-}
+import type { DocumentPreviewProps } from "@/types/document-types"
 
 export function DocumentPreview({
   isReadonly,
@@ -59,7 +54,7 @@ export function DocumentPreview({
   if (block.isVisible) {
     if (result) {
       return (
-        <DocumentToolResult
+        <DocumentToolResultComponent
           type="create"
           result={{ id: result.id, title: result.title, kind: result.kind }}
           isReadonly={isReadonly}

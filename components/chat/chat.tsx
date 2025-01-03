@@ -2,7 +2,7 @@
 
 import type { Attachment, Message } from "ai"
 import { useChat } from "ai/react"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import useSWR, { useSWRConfig } from "swr"
 
 import { ChatHeader } from "@/components/chat-header"
@@ -34,6 +34,31 @@ export function Chat({
   const [currentDocs, setCurrentDocs] = useState<
     Array<{ content: string; source: string }>
   >([])
+  const [isRetrieving, setIsRetrieving] = useState(false)
+
+  const handleRagRetrieval = useCallback(async (input: string) => {
+    setIsRetrieving(true)
+    try {
+      const relevantDocs = await runRagPipeline(input)
+      if (relevantDocs.length > 0) {
+        setCurrentDocs(
+          relevantDocs.map(doc => ({
+            content: doc.content,
+            source: doc.source || "Unknown source"
+          }))
+        )
+        return relevantDocs.map(doc => doc.content).join("\n\n")
+      }
+      setCurrentDocs([])
+      return undefined
+    } catch (error) {
+      console.error("Error running RAG pipeline:", error)
+      setCurrentDocs([])
+      return undefined
+    } finally {
+      setIsRetrieving(false)
+    }
+  }, [])
 
   const {
     messages,
@@ -49,11 +74,7 @@ export function Chat({
     id,
     body: {
       id,
-      modelId: selectedModelId,
-      context:
-        currentDocs.length > 0
-          ? `Based on the following documents:\n\n${currentDocs.map(doc => doc.content).join("\n\n")}\n\nPlease answer: `
-          : undefined
+      modelId: selectedModelId
     },
     initialMessages,
     experimental_throttle: 100,
@@ -61,25 +82,19 @@ export function Chat({
       mutate("/api/history")
     },
     onSubmit: async input => {
-      try {
-        // Always run RAG pipeline first
-        const relevantDocs = await runRagPipeline(input)
+      // Get RAG context first
+      const context = await handleRagRetrieval(input)
 
-        if (relevantDocs.length > 0) {
-          // If we have relevant docs, use them
-          setCurrentDocs(
-            relevantDocs.map(doc => ({
-              content: doc.content,
-              source: doc.source || "Unknown source"
-            }))
-          )
-        } else {
-          // If no relevant docs found, clear context
-          setCurrentDocs([])
+      // Append user message with RAG context
+      if (context) {
+        return {
+          messages: messages.concat({
+            id: crypto.randomUUID(),
+            content: input,
+            role: "user",
+            context
+          })
         }
-      } catch (error) {
-        console.error("Error running RAG pipeline:", error)
-        setCurrentDocs([])
       }
     }
   })
@@ -101,7 +116,7 @@ export function Chat({
 
         <Messages
           chatId={id}
-          isLoading={isLoading}
+          isLoading={isLoading || isRetrieving}
           votes={votes}
           messages={messages}
           setMessages={setMessages}
@@ -118,7 +133,7 @@ export function Chat({
               input={input}
               setInput={setInput}
               handleSubmit={handleSubmit}
-              isLoading={isLoading}
+              isLoading={isLoading || isRetrieving}
               stop={stop}
               attachments={attachments}
               setAttachments={setAttachments}
@@ -135,7 +150,7 @@ export function Chat({
         input={input}
         setInput={setInput}
         handleSubmit={handleSubmit}
-        isLoading={isLoading}
+        isLoading={isLoading || isRetrieving}
         stop={stop}
         attachments={attachments}
         setAttachments={setAttachments}

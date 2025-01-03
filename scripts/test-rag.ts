@@ -1,9 +1,9 @@
 "use server"
 
-import { ELEPHANT_WIKI } from "@/mock-data"
-import { processDocument } from "./processing/process-document"
-import { runRagPipeline } from "./retrieval/run-rag-pipeline"
-import { generateCompletionWithContext } from "./generation/generate-completion"
+import { ELEPHANT_WIKI } from "./mock-data"
+import { processDocument } from "@/lib/rag/processing/process-document"
+import { runRagPipeline } from "@/lib/rag/retrieval/run-rag-pipeline"
+import { generateCompletionWithContext } from "@/lib/rag/generation/generate-completion"
 
 // Test function to process and query the elephant data
 export async function testRagSystem() {
