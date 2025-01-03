@@ -6,34 +6,16 @@ This server page retrieves user todos from the database and renders them in a li
 
 "use server"
 
-import { getProfileByUserIdAction } from "@/actions/db/profiles-actions"
 import { getTodosAction } from "@/actions/db/todos-actions"
-import { TodoList } from "@/app/todo/_components/todo-list"
-import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { TodoList } from "./_components/todo-list"
 
 export default async function TodoPage() {
-  const { userId } = await auth()
-
-  if (!userId) {
-    return redirect("/login")
-  }
-
-  const { data: profile } = await getProfileByUserIdAction(userId)
-
-  if (!profile) {
-    return redirect("/signup")
-  }
-
-  if (profile.membership === "free") {
-    return redirect("/pricing")
-  }
-
-  const todos = await getTodosAction(userId)
+  const userId = "test-user" // Placeholder user ID
+  const { data: todos } = await getTodosAction(userId)
 
   return (
-    <div className="flex-1 p-4 pt-0">
-      <TodoList userId={userId} initialTodos={todos.data ?? []} />
+    <div className="container py-6">
+      <TodoList initialTodos={todos || []} userId={userId} />
     </div>
   )
 }

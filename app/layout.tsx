@@ -8,14 +8,11 @@ import {
   createProfileAction,
   getProfileByUserIdAction
 } from "@/actions/db/profiles-actions"
-import { Toaster } from "@/components/ui/toaster"
-import { PostHogPageview } from "@/components/utilities/posthog/posthog-pageview"
-import { PostHogUserIdentify } from "@/components/utilities/posthog/posthog-user-identity"
-import { Providers } from "@/components/utilities/providers"
+import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/utilities/theme/theme-provider"
+import { PostHogProvider } from "@/components/utilities/posthog/posthog-provider"
 import { TailwindIndicator } from "@/components/utilities/tailwind-indicator"
 import { cn } from "@/lib/utils"
-import { ClerkProvider } from "@clerk/nextjs"
-import { auth } from "@clerk/nextjs/server"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -32,41 +29,27 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { userId } = await auth()
-
-  if (userId) {
-    const profileRes = await getProfileByUserIdAction(userId)
-    if (!profileRes.isSuccess) {
-      await createProfileAction({ userId })
-    }
-  }
-
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={cn(
-            "bg-background mx-auto min-h-screen w-full scroll-smooth antialiased",
-            inter.className
-          )}
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        className={cn(
+          "bg-background min-h-screen font-sans antialiased",
+          inter.className
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <Providers
-            attribute="class"
-            defaultTheme="light"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            <PostHogUserIdentify />
-            <PostHogPageview />
-
+          <PostHogProvider>
             {children}
-
-            <TailwindIndicator />
-
             <Toaster />
-          </Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+          </PostHogProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }
