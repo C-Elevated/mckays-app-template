@@ -5,14 +5,14 @@ Contains server actions related to Stripe.
 */
 
 import {
-  updateProfileAction,
-  updateProfileByStripeCustomerIdAction
-} from "@/actions/db/profiles-actions"
-import { SelectProfile } from "@/db/schema"
+  updateUserAction,
+  updateUserByStripeCustomerIdAction
+} from "@/actions/db/users-actions"
+import { SelectUser } from "@/db/schema"
 import { stripe } from "@/lib/stripe"
 import Stripe from "stripe"
 
-type MembershipStatus = SelectProfile["membership"]
+type MembershipStatus = SelectUser["membership"]
 
 const getMembershipStatus = (
   status: Stripe.Subscription.Status,
@@ -52,13 +52,13 @@ export const updateStripeCustomer = async (
 
     const subscription = await getSubscription(subscriptionId)
 
-    const result = await updateProfileAction(userId, {
+    const result = await updateUserAction(userId, {
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscription.id
     })
 
     if (!result.isSuccess) {
-      throw new Error("Failed to update customer profile")
+      throw new Error("Failed to update customer user")
     }
 
     return result.data
@@ -97,7 +97,7 @@ export const manageSubscriptionStatusChange = async (
       membership
     )
 
-    const updateResult = await updateProfileByStripeCustomerIdAction(
+    const updateResult = await updateUserByStripeCustomerIdAction(
       customerId,
       {
         stripeSubscriptionId: subscription.id,
