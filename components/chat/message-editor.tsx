@@ -1,9 +1,9 @@
 "use client"
 
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 
-import { deleteTrailingMessages } from "@/app/(chat)/actions"
+import { deleteTrailingMessages } from "@/app/chat/actions"
 import { useUserMessageId } from "@/hooks/use-user-message-id"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -30,6 +30,7 @@ export function MessageEditor({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [draftContent, setDraftContent] = useState<string>(message.content)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const { toast } = useToast()
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -77,13 +78,17 @@ export function MessageEditor({
             const messageId = userMessageIdFromServer ?? message.id
 
             if (!messageId) {
-              toast.error("Something went wrong, please try again!")
+              toast({
+                title: "Error",
+                description: "Something went wrong, please try again!"
+              })
               setIsSubmitting(false)
               return
             }
 
             await deleteTrailingMessages({
-              id: messageId
+              chatId: message.chatId,
+              messageId: messageId
             })
 
             setMessages(messages => {
@@ -103,6 +108,11 @@ export function MessageEditor({
 
             setMode("view")
             reload()
+
+            toast({
+              title: "Success",
+              description: "Message updated successfully!"
+            })
           }}
         >
           {isSubmitting ? "Sending..." : "Send"}

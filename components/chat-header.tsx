@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -31,6 +31,7 @@ export function ChatHeader({
   isReadonly
 }: ChatHeaderProps) {
   const router = useRouter()
+  const { toast } = useToast()
 
   return (
     <div className="bg-background sticky top-0 z-50 flex flex-row items-center justify-between gap-2 border-b px-4 py-2">
@@ -67,7 +68,10 @@ export function ChatHeader({
             await navigator.clipboard.writeText(
               `${window.location.origin}/chat/${chatId}`
             )
-            toast.success("Copied share link to clipboard!")
+            toast({
+              title: "Success",
+              description: "Copied share link to clipboard!"
+            })
           }}
         >
           <ShareIcon />

@@ -16,7 +16,7 @@ This is a web app template.
 
 - Frontend: Next.js, Tailwind, Shadcn, Framer Motion
 - Backend: Postgres, Supabase, Drizzle ORM, Server Actions
-- Auth: Clerk
+- Auth: Supabase Auth
 - Payments: Stripe
 - Analytics: PostHog
 - Deployment: Vercel
@@ -468,16 +468,43 @@ export async function deleteTodoAction(id: string): Promise<ActionState<void>> {
 }
 ```
 
-### Auth Rules
+### Supabase Auth Guidelines
 
-Follow these rules when working on auth.
+Importing the Auth Helper: In server components, import the Supabase Auth helper using:
 
-It uses Clerk for authentication.
+```ts
+import { auth } from "@supabase/ssr"
+```
 
-#### General Rules
+Using the Auth Helper in Server Actions: When working with server actions, ensure to await the auth helper to handle authentication properly. For example:
 
-- Import the auth helper with `import { auth } from "@clerk/nextjs/server"` in server components
-- await the auth helper in server actions
+```ts
+const { user, error } = await auth({ req })
+```
+
+General Rules:
+
+Always ensure that the user is authenticated before performing any actions that require user identity.
+Use the auth.uid() function to retrieve the current user's ID for any database operations that require user-specific data.
+
+Example Usage
+Here’s a simple example of how to use the auth helper in a server action:
+
+import { auth } from "@supabase/ssr";
+
+export async function someServerAction(req) {
+    const { user, error } = await auth({ req });
+
+    if (error) {
+        // Handle authentication error
+        return { status: 401, message: "Unauthorized" };
+    }
+
+    // Proceed with actions that require authenticated user
+    const userId = user.id;
+  // Perform database operations using userId
+}
+```
 
 ### Payments Rules
 

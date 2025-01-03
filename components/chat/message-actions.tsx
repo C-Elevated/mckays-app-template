@@ -1,7 +1,7 @@
 "use client"
 
 import { memo } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 import { useSWRConfig } from "swr"
 import { useCopyToClipboard } from "usehooks-ts"
 import equal from "fast-deep-equal"
@@ -33,6 +33,7 @@ function PureMessageActions({
 }: MessageActionsProps) {
   const { mutate } = useSWRConfig()
   const [_, copyToClipboard] = useCopyToClipboard()
+  const { toast } = useToast()
 
   if (isLoading) return null
   if (message.role === "user") return null
@@ -48,7 +49,10 @@ function PureMessageActions({
               variant="outline"
               onClick={async () => {
                 await copyToClipboard(message.content as string)
-                toast.success("Copied to clipboard!")
+                toast({
+                  title: "Success",
+                  description: "Message copied to clipboard!"
+                })
               }}
             >
               <CopyIcon />

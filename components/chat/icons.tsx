@@ -1,108 +1,47 @@
 "use client"
 
 import {
-  X,
-  Loader2,
-  MessageSquare,
-  FileText,
-  Pencil,
-  Copy,
-  Play,
-  History,
-  Undo,
-  Redo,
-  Terminal,
-  ThumbsUp,
-  ThumbsDown,
+  ArrowUp,
   Code,
-  CircleDot,
-  Share,
+  Copy,
   Eye,
   EyeOff,
-  Users
+  FileText,
+  Fullscreen,
+  Loader2,
+  MessageSquare,
+  Paperclip,
+  Pencil,
+  Play,
+  Plus,
+  Share,
+  Sparkles,
+  Square,
+  ThumbsDown,
+  ThumbsUp,
+  Users,
+  X,
+  CircleDot
 } from "lucide-react"
 
-interface IconProps {
-  className?: string
-  size?: number
-}
-
-export function FileIcon({ className, size = 16 }: IconProps) {
-  return <FileText className={className} width={size} height={size} />
-}
-
-export function MessageIcon({ className, size = 16 }: IconProps) {
-  return <MessageSquare className={className} width={size} height={size} />
-}
-
-export function PencilEditIcon({ className, size = 16 }: IconProps) {
-  return <Pencil className={className} width={size} height={size} />
-}
-
-export function CrossIcon({ className, size = 16 }: IconProps) {
-  return <X className={className} width={size} height={size} />
-}
-
-export function CrossSmallIcon({ className, size = 16 }: IconProps) {
-  return <X className={className} width={size} height={size} />
-}
-
-export function LoaderIcon({ className, size = 16 }: IconProps) {
-  return <Loader2 className={className} width={size} height={size} />
-}
-
-export function TerminalWindowIcon({ className, size = 16 }: IconProps) {
-  return <Terminal className={className} width={size} height={size} />
-}
-
-export function CopyIcon({ className, size = 16 }: IconProps) {
-  return <Copy className={className} width={size} height={size} />
-}
-
-export function PlayIcon({ className, size = 16 }: IconProps) {
-  return <Play className={className} width={size} height={size} />
-}
-
-export function ClockRewind({ className, size = 16 }: IconProps) {
-  return <History className={className} width={size} height={size} />
-}
-
-export function UndoIcon({ className, size = 16 }: IconProps) {
-  return <Undo className={className} width={size} height={size} />
-}
-
-export function RedoIcon({ className, size = 16 }: IconProps) {
-  return <Redo className={className} width={size} height={size} />
-}
-
-export function ThumbUpIcon({ className, size = 16 }: IconProps) {
-  return <ThumbsUp className={className} width={size} height={size} />
-}
-
-export function ThumbDownIcon({ className, size = 16 }: IconProps) {
-  return <ThumbsDown className={className} width={size} height={size} />
-}
-
-export function CodeIcon({ className, size = 16 }: IconProps) {
-  return <Code className={className} width={size} height={size} />
-}
-
-export function PythonIcon({ className, size = 16 }: IconProps) {
-  return <CircleDot className={className} width={size} height={size} />
-}
-
-export function ShareIcon({ className, size = 16 }: IconProps) {
-  return <Share className={className} width={size} height={size} />
-}
-
-export function EyeIcon({ className, size = 16 }: IconProps) {
-  return <Eye className={className} width={size} height={size} />
-}
-
-export function EyeOffIcon({ className, size = 16 }: IconProps) {
-  return <EyeOff className={className} width={size} height={size} />
-}
-
-export function UsersIcon({ className, size = 16 }: IconProps) {
-  return <Users className={className} width={size} height={size} />
-}
+export const PaperclipIcon = Paperclip
+export const StopIcon = Square
+export const ArrowUpIcon = ArrowUp
+export const SparklesIcon = Sparkles
+export const CrossIcon = X
+export const MessageIcon = MessageSquare
+export const CopyIcon = Copy
+export const ThumbUpIcon = ThumbsUp
+export const ThumbDownIcon = ThumbsDown
+export const LoaderIcon = Loader2
+export const PencilEditIcon = Pencil
+export const EyeIcon = Eye
+export const EyeOffIcon = EyeOff
+export const UsersIcon = Users
+export const ShareIcon = Share
+export const PlusIcon = Plus
+export const CodeIcon = Code
+export const PlayIcon = Play
+export const PythonIcon = CircleDot
+export const FileIcon = FileText
+export const FullscreenIcon = Fullscreen

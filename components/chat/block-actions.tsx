@@ -8,7 +8,7 @@ import {
   useCallback,
   useState
 } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 import { useCopyToClipboard } from "usehooks-ts"
 
 import { Button } from "@/components/ui/button"
@@ -130,6 +130,7 @@ function PureBlockActions({
   setConsoleOutputs
 }: BlockActionsProps) {
   const [_, copyToClipboard] = useCopyToClipboard()
+  const { toast } = useToast()
 
   return (
     <div className="flex flex-row gap-1">
@@ -198,7 +199,10 @@ function PureBlockActions({
             className="hover:bg-muted h-fit p-2"
             onClick={() => {
               copyToClipboard(block.content)
-              toast.success("Copied to clipboard!")
+              toast({
+                title: "Success",
+                description: "Block copied to clipboard!"
+              })
             }}
             disabled={block.status === "streaming"}
           >

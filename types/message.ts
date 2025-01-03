@@ -1,13 +1,8 @@
-export interface Message {
-  id: string
-  content: string
-  role: "user" | "assistant" | "system"
-  createdAt?: Date
-  updatedAt?: Date
+import type { Attachment, Message as AIMessage } from "ai"
+
+export interface Message extends AIMessage {
+  chatId: string
 }
 
-export interface ChatRequestOptions {
-  headers?: Record<string, string>
-  body?: any
-  signal?: AbortSignal
-}
+export type { Attachment }
+export type { CreateMessage, ChatRequestOptions } from "ai"

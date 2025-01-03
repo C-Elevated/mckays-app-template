@@ -3,19 +3,27 @@
 import { createClient } from "@/components/utilities/supabase/client"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function Dashboard() {
   const router = useRouter()
   const supabase = createClient()
+  const { toast } = useToast()
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
     if (error) {
-      toast.error(error.message)
+      toast({
+        title: "Error",
+        description: error.message
+      })
     } else {
       router.push("/sign-in")
       router.refresh()
+      toast({
+        title: "Success",
+        description: "Action completed successfully!"
+      })
     }
   }
 

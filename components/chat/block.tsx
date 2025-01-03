@@ -3,7 +3,7 @@
 import type { Attachment, ChatRequestOptions, Message } from "ai"
 import { AnimatePresence, motion } from "framer-motion"
 import { useCallback, useEffect } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 
 import type { Vote } from "@/db/schema"
 import { useBlock } from "@/hooks/use-block"
@@ -50,6 +50,7 @@ export function Block({
   isReadonly
 }: BlockProps) {
   const block = useBlock()
+  const { toast } = useToast()
 
   const handleClose = useCallback(() => {
     block.setBlock(block => ({ ...block, isVisible: false }))

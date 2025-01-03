@@ -32,3 +32,10 @@ export async function fetcher<T = any>(
   if (!res.ok) throw new Error("Failed to fetch data")
   return res.json()
 }
+
+export function getMessageIdFromAnnotations(annotations: any[] = []) {
+  const messageIdAnnotation = annotations.find(
+    annotation => annotation.type === "message_id"
+  )
+  return messageIdAnnotation?.message_id
+}

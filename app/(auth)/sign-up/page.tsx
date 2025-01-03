@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MailIcon, LockIcon } from "lucide-react"
 import { useState } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -17,6 +17,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const { toast } = useToast()
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,14 +36,23 @@ export default function SignUp() {
       })
 
       if (error) {
-        toast.error(error.message)
+        toast({
+          title: "Error",
+          description: error.message
+        })
       } else if (data?.user) {
-        toast.success("Account created successfully!")
+        toast({
+          title: "Success",
+          description: "Account created successfully!"
+        })
         router.push("/protected/dashboard")
         router.refresh()
       }
     } catch (error) {
-      toast.error("An unexpected error occurred")
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred"
+      })
     } finally {
       setLoading(false)
     }

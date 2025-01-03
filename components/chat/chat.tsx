@@ -9,6 +9,7 @@ import { ChatHeader } from "@/components/chat-header"
 import type { Vote } from "@/db/schema"
 import { fetcher } from "@/lib/utils"
 import { useBlockSelector } from "@/hooks/use-block"
+import { runRagPipeline } from "@/lib/rag/retrieval/run-rag-pipeline"
 import { Block } from "./block"
 import { MultimodalInput } from "./multimodal-input"
 import { Messages } from "./messages"
@@ -30,6 +31,9 @@ export function Chat({
   isReadonly
 }: ChatProps) {
   const { mutate } = useSWRConfig()
+  const [currentDocs, setCurrentDocs] = useState<
+    Array<{ content: string; source: string }>
+  >([])
 
   const {
     messages,
@@ -43,11 +47,40 @@ export function Chat({
     reload
   } = useChat({
     id,
-    body: { id, modelId: selectedModelId },
+    body: {
+      id,
+      modelId: selectedModelId,
+      context:
+        currentDocs.length > 0
+          ? `Based on the following documents:\n\n${currentDocs.map(doc => doc.content).join("\n\n")}\n\nPlease answer: `
+          : undefined
+    },
     initialMessages,
     experimental_throttle: 100,
     onFinish: () => {
       mutate("/api/history")
+    },
+    onSubmit: async input => {
+      try {
+        // Always run RAG pipeline first
+        const relevantDocs = await runRagPipeline(input)
+
+        if (relevantDocs.length > 0) {
+          // If we have relevant docs, use them
+          setCurrentDocs(
+            relevantDocs.map(doc => ({
+              content: doc.content,
+              source: doc.source || "Unknown source"
+            }))
+          )
+        } else {
+          // If no relevant docs found, clear context
+          setCurrentDocs([])
+        }
+      } catch (error) {
+        console.error("Error running RAG pipeline:", error)
+        setCurrentDocs([])
+      }
     }
   })
 
@@ -75,6 +108,7 @@ export function Chat({
           reload={reload}
           isReadonly={isReadonly}
           isBlockVisible={isBlockVisible}
+          currentDocs={currentDocs}
         />
 
         <form className="bg-background mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">

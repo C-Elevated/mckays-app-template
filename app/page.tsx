@@ -1,18 +1,18 @@
 "use server"
 
-import { createClient } from "@/components/utilities/supabase/server"
-import { redirect } from "next/navigation"
+import { FeaturesSection } from "@/components/landing/features"
+import { HeroSection } from "@/components/landing/hero"
 
-export default async function Home() {
-  const supabase = await createClient()
-
-  const {
-    data: { session }
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    redirect("/sign-in")
-  }
-
-  redirect("/protected/dashboard")
+export default async function HomePage() {
+  return (
+    <div className="pb-20">
+      <HeroSection />
+      {/* social proof */}
+      <FeaturesSection />
+      {/* pricing */}
+      {/* faq */}
+      {/* blog */}
+      {/* footer */}
+    </div>
+  )
 }

@@ -13,7 +13,7 @@ import {
   type ChangeEvent,
   memo
 } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 import { useLocalStorage, useWindowSize } from "usehooks-ts"
 import equal from "fast-deep-equal"
 
@@ -63,6 +63,7 @@ function PureMultimodalInput({
 }: MultimodalInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { width } = useWindowSize()
+  const { toast } = useToast()
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -143,9 +144,15 @@ function PureMultimodalInput({
         }
       }
       const { error } = await response.json()
-      toast.error(error)
+      toast({
+        title: "Error",
+        description: error
+      })
     } catch (error) {
-      toast.error("Failed to upload file, please try again!")
+      toast({
+        title: "Error",
+        description: "Failed to upload file, please try again!"
+      })
     }
   }
 
@@ -228,7 +235,10 @@ function PureMultimodalInput({
             event.preventDefault()
 
             if (isLoading) {
-              toast.error("Please wait for the model to finish its response!")
+              toast({
+                title: "Error",
+                description: "Please wait for the model to finish its response!"
+              })
             } else {
               submitForm()
             }

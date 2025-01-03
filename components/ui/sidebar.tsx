@@ -16,7 +16,7 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/lib/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
@@ -377,6 +377,71 @@ export const SidebarMenuButton = React.forwardRef<
   }
 )
 SidebarMenuButton.displayName = "SidebarMenuButton"
+
+export const SidebarInset = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => {
+  const { state } = useSidebar()
+
+  return (
+    <div
+      ref={ref}
+      data-state={state}
+      className={cn(
+        "relative flex min-h-svh flex-1 flex-col transition-[margin] duration-200 ease-linear",
+        "peer-data-[collapsible=offcanvas]:ml-0 peer-data-[state=expanded]:ml-[--sidebar-width]",
+        "peer-data-[variant=floating]:ml-0 peer-data-[variant=floating]:peer-data-[state=expanded]:ml-[calc(var(--sidebar-width)_+_theme(spacing.4))]",
+        "peer-data-[variant=inset]:ml-0 peer-data-[variant=inset]:peer-data-[state=expanded]:ml-[calc(var(--sidebar-width)_+_theme(spacing.4))]",
+        "peer-data-[collapsible=icon]:peer-data-[state=collapsed]:ml-[--sidebar-width-icon]",
+        "peer-data-[variant=floating]:peer-data-[collapsible=icon]:peer-data-[state=collapsed]:ml-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]",
+        "peer-data-[variant=inset]:peer-data-[collapsible=icon]:peer-data-[state=collapsed]:ml-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]",
+        className
+      )}
+      {...props}
+    />
+  )
+})
+SidebarInset.displayName = "SidebarInset"
+
+export const SidebarHeader = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="header"
+    className={cn("flex h-14 items-center px-4", className)}
+    {...props}
+  />
+))
+SidebarHeader.displayName = "SidebarHeader"
+
+export const SidebarContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="content"
+    className={cn("flex flex-1 flex-col overflow-hidden", className)}
+    {...props}
+  />
+))
+SidebarContent.displayName = "SidebarContent"
+
+export const SidebarFooter = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="footer"
+    className={cn("flex h-14 items-center gap-2 px-4", className)}
+    {...props}
+  />
+))
+SidebarFooter.displayName = "SidebarFooter"
 
 // Export other sidebar components (Header, Content, Footer, etc.)
 // ... rest of the sidebar components

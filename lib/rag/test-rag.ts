@@ -38,3 +38,15 @@ export async function testRagSystem() {
     throw error
   }
 }
+
+export async function testRag(text: string) {
+  // This is a placeholder for the actual RAG testing logic
+  return {
+    success: true,
+    message: "RAG test successful",
+    data: {
+      text,
+      score: 0.95
+    }
+  }
+}

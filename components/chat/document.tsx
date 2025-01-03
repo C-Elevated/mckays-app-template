@@ -1,7 +1,7 @@
 "use client"
 
 import { memo } from "react"
-import { toast } from "sonner"
+import { useToast } from "@/components/ui/use-toast"
 
 import { Button } from "@/components/ui/button"
 import { CodeBlock } from "./code-block"
@@ -54,6 +54,8 @@ function PureDocumentToolResult({
   result,
   isReadonly
 }: DocumentToolResultProps) {
+  const { toast } = useToast()
+
   if (type === "update") {
     return (
       <div className="flex flex-col gap-2">
@@ -82,7 +84,10 @@ function PureDocumentToolResult({
               disabled={isReadonly}
               onClick={() => {
                 navigator.clipboard.writeText(suggestion)
-                toast.success("Copied to clipboard!")
+                toast({
+                  title: "Success",
+                  description: "Copied to clipboard!"
+                })
               }}
             >
               {suggestion}
